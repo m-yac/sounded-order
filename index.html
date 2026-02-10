@@ -29,9 +29,30 @@
       </div>
       <div class="col">
         <div class="slider-row">
+          <label for="slider-m1">m1</label>
+          <input type="range" id="slider-m1" min="0" max="31" value="0" />
+          <span class="value" id="value-m1">0</span>
+        </div>
+        <div class="slider-row">
+          <label for="slider-n1">n1</label>
+          <input type="range" id="slider-n1" min="0" max="32" value="0" />
+          <span class="value" id="value-n1">0</span>
+        </div>
+        <div class="freq-row">
+          <span class="freq-label" id="freq-label-1"></span>
+          <button class="sound-btn" id="sound-btn-1">&#9654;</button>
+        </div>
+      </div>
+      <div class="col">
+        <div class="slider-row">
           <label for="slider-theta">θ</label>
           <input type="range" id="slider-theta" min="-180" max="180" step="1" value="0" />
           <span class="value" id="value-theta">0</span>
+        </div>
+        <div class="slider-row">
+          <label for="slider-c">c</label>
+          <input type="range" id="slider-c" min="0" max="0.5" step="0.01" value="0.10" />
+          <span class="value" id="value-c">0.10</span>
         </div>
         <div class="checkbox-row">
           <span class="checkbox-label">Show:</span>
