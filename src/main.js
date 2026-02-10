@@ -181,9 +181,7 @@ sliderM.addEventListener('input', () => {
   m = parseInt(sliderM.value);
   valueM.textContent = m;
   freqLabel.textContent = `Frequency: ${getFreqHz(m, n).toFixed(4)}`;
-  if (oscillator) {
-    oscillator.frequency.value = getFreqHz();
-  }
+  if (oscillator) oscillator.frequency.value = getFreqHz(m, n);
   draw();
 });
 
@@ -191,9 +189,7 @@ sliderN.addEventListener('input', () => {
   n = parseInt(sliderN.value);
   valueN.textContent = n;
   freqLabel.textContent = `Frequency: ${getFreqHz(m, n).toFixed(4)}`;
-  if (oscillator) {
-    oscillator.frequency.value = getFreqHz();
-  }
+  if (oscillator) oscillator.frequency.value = getFreqHz(m, n);
   draw();
 });
 
@@ -201,9 +197,7 @@ sliderM1.addEventListener('input', () => {
   m1 = parseInt(sliderM1.value);
   valueM1.textContent = m1;
   freqLabel1.textContent = `Frequency: ${getFreqHz(m1, n1).toFixed(4)}`;
-  if (oscillator1) {
-    oscillator1.frequency.value = getFreqHz();
-  }
+  if (oscillator1) oscillator1.frequency.value = getFreqHz(m1, n1);
   draw();
 });
 
@@ -211,9 +205,7 @@ sliderN1.addEventListener('input', () => {
   n1 = parseInt(sliderN1.value);
   valueN1.textContent = n1;
   freqLabel1.textContent = `Frequency: ${getFreqHz(m1, n1).toFixed(4)}`;
-  if (oscillator1) {
-    oscillator1.frequency.value = getFreqHz();
-  }
+  if (oscillator1) oscillator1.frequency.value = getFreqHz(m1, n1);
   draw();
 });
 
