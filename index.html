@@ -6,16 +6,19 @@
     <title>Sounded Order</title>
   </head>
   <body>
-    <canvas id="canvas"></canvas>
+    <div class="canvas-wrap" id="canvas-wrap">
+      <img id="bg-image" />
+      <canvas id="canvas"></canvas>
+    </div>
     <div class="controls">
       <div class="col">
         <div class="slider-row">
-          <label>m</label>
+          <label for="slider-m">m</label>
           <input type="range" id="slider-m" min="0" max="31" value="3" />
           <span class="value" id="value-m">3</span>
         </div>
         <div class="slider-row">
-          <label>n</label>
+          <label for="slider-n">n</label>
           <input type="range" id="slider-n" min="1" max="32" value="4" />
           <span class="value" id="value-n">4</span>
         </div>
@@ -23,13 +26,19 @@
       </div>
       <div class="col">
         <div class="slider-row">
-          <label>θ</label>
+          <label for="slider-theta">θ</label>
           <input type="range" id="slider-theta" min="-180" max="180" step="1" value="0" />
           <span class="value" id="value-theta">0</span>
         </div>
         <div class="checkbox-row">
-          <label><input type="checkbox" id="check-peaks" checked /> Show peaks</label>
-          <label><input type="checkbox" id="check-valleys" /> Show valleys</label>
+          <span class="checkbox-label">Show:</span>
+          <input type="checkbox" id="check-nodes" checked /> <label for="check-nodes">Nodes</label>
+          <input type="checkbox" id="check-peaks" checked /> <label for="check-peaks">Peaks</label>
+          <input type="checkbox" id="check-valleys" /> <label for="check-valleys">Valleys</label>
+        </div>
+        <div class="compare-row">
+          <label for="file-input">Compare:</label>
+          <input type="file" id="file-input" accept="image/*" />
         </div>
       </div>
     </div>

@@ -11,9 +11,13 @@ const sliderTheta = document.getElementById('slider-theta');
 const valueM = document.getElementById('value-m');
 const valueN = document.getElementById('value-n');
 const valueTheta = document.getElementById('value-theta');
+const checkNodes = document.getElementById('check-nodes');
 const checkPeaks = document.getElementById('check-peaks');
 const checkValleys = document.getElementById('check-valleys');
 const freqLabel = document.getElementById('freq-label');
+const canvasWrap = document.getElementById('canvas-wrap');
+const bgImage = document.getElementById('bg-image');
+const fileInput = document.getElementById('file-input');
 
 // alpha(m, n) returns the nth zero of J_m (n is 1-indexed)
 function alpha(m, n) {
@@ -24,6 +28,7 @@ function alpha(m, n) {
 let m = parseInt(sliderM.value);
 let n = parseInt(sliderN.value);
 let thetaOffset = parseInt(sliderTheta.value) * Math.PI / 180;
+let showNodes = checkNodes.checked;
 let showPeaks = checkPeaks.checked;
 let showValleys = checkValleys.checked;
 
@@ -38,6 +43,9 @@ function resize() {
   const size = Math.max(100, maxSize);
   canvas.width = size;
   canvas.height = size;
+  canvasWrap.style.width = size + 'px';
+  canvasWrap.style.height = size + 'px';
+  updateBgTransform();
   draw();
 }
 
@@ -62,15 +70,17 @@ function draw() {
       const idx = (py * width + px) * 4;
 
       if (r > 1) {
-        // Smoothstep: outer nodal boundary (white)
-        const e0 = threshold * 0.5;
-        const e1 = threshold * 1.5;
-        const t0 = Math.max(0, Math.min(1, ((r-1) - e0) / (e1 - e0)));
-        const nodalBlend = t0 * t0 * (3 - 2 * t0);
-        data[idx + 0] = 255;
-        data[idx + 1] = 255;
-        data[idx + 2] = 255;
-        data[idx + 3] = 255 * (1 - nodalBlend);
+        if (showNodes) {
+          // Smoothstep: outer nodal boundary (white)
+          const e0 = threshold * 0.5;
+          const e1 = threshold * 1.5;
+          const t0 = Math.max(0, Math.min(1, ((r-1) - e0) / (e1 - e0)));
+          const nodalBlend = t0 * t0 * (3 - 2 * t0);
+          data[idx + 0] = 255;
+          data[idx + 1] = 255;
+          data[idx + 2] = 255;
+          data[idx + 3] = 255 * (1 - nodalBlend);
+        }
         continue;
       }
 
@@ -83,7 +93,7 @@ function draw() {
       const e0 = threshold * 0.5;
       const e1 = threshold * 1.5;
       const t0 = Math.max(0, Math.min(1, (absU - e0) / (e1 - e0)));
-      const nodalBlend = t0 * t0 * (3 - 2 * t0);
+      const nodalBlend = showNodes ? t0 * t0 * (3 - 2 * t0) : 1;
       let blend = nodalBlend;
       let opacity = 1;
       let red = (1 - nodalBlend);
@@ -145,6 +155,11 @@ sliderTheta.addEventListener('input', () => {
   draw();
 });
 
+checkNodes.addEventListener('change', () => {
+  showNodes = checkNodes.checked;
+  draw();
+});
+
 checkPeaks.addEventListener('change', () => {
   showPeaks = checkPeaks.checked;
   draw();
@@ -160,6 +175,69 @@ valueM.textContent = m;
 valueN.textContent = n;
 valueTheta.textContent = sliderTheta.value;
 updateFreqLabel();
+
+// Clear stale file input (browser remembers name but not data across refresh)
+fileInput.value = '';
+
+// --- Background image: upload, drag, scroll-to-zoom ---
+let imgX = 0, imgY = 0, imgScale = 1;
+
+function updateBgTransform() {
+  bgImage.style.transform = `translate(${imgX}px, ${imgY}px) scale(${imgScale})`;
+}
+
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  bgImage.onload = () => {
+    // Fit image to canvas size initially
+    const wrapSize = canvas.width;
+    imgScale = wrapSize / Math.max(bgImage.naturalWidth, bgImage.naturalHeight);
+    imgX = (wrapSize - bgImage.naturalWidth * imgScale) / 2;
+    imgY = (wrapSize - bgImage.naturalHeight * imgScale) / 2;
+    bgImage.style.display = 'block';
+    updateBgTransform();
+  };
+  bgImage.src = url;
+});
+
+// Drag to move
+let dragging = false, dragStartX, dragStartY, imgStartX, imgStartY;
+
+canvas.addEventListener('mousedown', (e) => {
+  dragging = true;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+  imgStartX = imgX;
+  imgStartY = imgY;
+  e.preventDefault();
+});
+
+window.addEventListener('mousemove', (e) => {
+  if (!dragging) return;
+  imgX = imgStartX + (e.clientX - dragStartX);
+  imgY = imgStartY + (e.clientY - dragStartY);
+  updateBgTransform();
+});
+
+window.addEventListener('mouseup', () => { dragging = false; });
+
+// Scroll to zoom (centered on cursor)
+canvas.addEventListener('wheel', (e) => {
+  if (bgImage.style.display === 'none') return;
+  e.preventDefault();
+  const center = canvas.width / 2;
+
+  const factor = e.deltaY < 0 ? 1.005 : 1 / 1.005;
+  const newScale = imgScale * factor;
+
+  // Zoom toward center
+  imgX = center - (center - imgX) * factor;
+  imgY = center - (center - imgY) * factor;
+  imgScale = newScale;
+  updateBgTransform();
+}, { passive: false });
 
 window.addEventListener('resize', resize);
 resize();

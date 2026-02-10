@@ -8,6 +8,9 @@ html, body {
   width: 100%;
   height: 100%;
   background: #000;
+  color: #fff;
+  font-size: 14px;
+  font-family: monospace;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -16,14 +19,33 @@ html, body {
 
 canvas {
   display: block;
+}
+
+.canvas-wrap {
+  position: relative;
   margin-top: 20px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+canvas {
+  position: relative;
+  z-index: 1;
+}
+
+#bg-image {
+  position: absolute;
+  display: none;
+  transform-origin: 0 0;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .controls {
   display: flex;
   gap: 60px;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 36px;
+  margin-bottom: 36px;
 }
 
 .col {
@@ -40,9 +62,6 @@ canvas {
 }
 
 .slider-row label {
-  color: #fff;
-  font-family: monospace;
-  font-size: 14px;
   min-width: 24px;
 }
 
@@ -52,26 +71,22 @@ canvas {
 }
 
 .slider-row .value {
-  color: #fff;
-  font-family: monospace;
-  font-size: 14px;
   min-width: 20px;
   text-align: right;
 }
 
 .freq-label {
-  color: #fff;
   font-family: monospace;
-  font-size: 14px;
   text-align: center;
 }
 
 .checkbox-row {
   display: flex;
   gap: 16px;
-  color: #fff;
-  font-family: monospace;
-  font-size: 14px;
+}
+
+.checkbox-row .checkbox-label {
+  margin-right: 2px;
 }
 
 .checkbox-row label {
@@ -81,18 +96,24 @@ canvas {
   cursor: pointer;
 }
 
-.upload-btn {
-  margin-top: auto;
+.compare-row input {
+  color: #aaa;
+  font-size: 14px;
+  font-family: monospace;
+}
+
+.compare-row input::file-selector-button {
+  color: #fff;
+  font-size: 14px;
+  font-family: monospace;
+  margin-right: 10px;
   padding: 6px 12px;
   background: #333;
-  color: #fff;
   border: 1px solid #555;
   border-radius: 4px;
-  font-family: monospace;
-  font-size: 13px;
   cursor: pointer;
 }
 
-.upload-btn:hover {
+.compare-row input::file-selector-button:hover {
   background: #444;
 }
