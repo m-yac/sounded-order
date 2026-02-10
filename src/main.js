@@ -18,6 +18,7 @@ const freqLabel = document.getElementById('freq-label');
 const canvasWrap = document.getElementById('canvas-wrap');
 const bgImage = document.getElementById('bg-image');
 const fileInput = document.getElementById('file-input');
+const soundBtn = document.getElementById('sound-btn');
 
 // alpha(m, n) returns the nth zero of J_m (n is 1-indexed)
 function alpha(m, n) {
@@ -32,8 +33,45 @@ let showNodes = checkNodes.checked;
 let showPeaks = checkPeaks.checked;
 let showValleys = checkValleys.checked;
 
+let audioCtx = null;
+let oscillator = null;
+let playing = false;
+
+function getFreqHz() {
+  return alpha(m, n) * 10;
+}
+
+function startTone() {
+  if (!audioCtx) audioCtx = new AudioContext();
+  oscillator = audioCtx.createOscillator();
+  oscillator.type = 'sine';
+  oscillator.frequency.value = getFreqHz();
+  oscillator.connect(audioCtx.destination);
+  oscillator.start();
+  playing = true;
+  soundBtn.textContent = '\u25A0'; // stop square
+  soundBtn.classList.add('playing');
+}
+
+function stopTone() {
+  if (oscillator) {
+    oscillator.stop();
+    oscillator.disconnect();
+    oscillator = null;
+  }
+  playing = false;
+  soundBtn.textContent = '\u25B6'; // play triangle
+  soundBtn.classList.remove('playing');
+}
+
+function updateToneFreq() {
+  if (oscillator) {
+    oscillator.frequency.value = getFreqHz();
+  }
+}
+
 function updateFreqLabel() {
-  freqLabel.textContent = `Frequency: ${alpha(m, n).toFixed(4)}`;
+  freqLabel.textContent = `Frequency: ${getFreqHz().toFixed(4)}`;
 }
 
 function resize() {
@@ -139,6 +177,7 @@ sliderM.addEventListener('input', () => {
   m = parseInt(sliderM.value);
   valueM.textContent = m;
   updateFreqLabel();
+  updateToneFreq();
   draw();
 });
 
@@ -146,7 +185,13 @@ sliderN.addEventListener('input', () => {
   n = parseInt(sliderN.value);
   valueN.textContent = n;
   updateFreqLabel();
+  updateToneFreq();
   draw();
+});
+
+soundBtn.addEventListener('click', () => {
+  if (playing) stopTone();
+  else startTone();
 });
 
 sliderTheta.addEventListener('input', () => {

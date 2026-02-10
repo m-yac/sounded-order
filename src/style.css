@@ -75,9 +75,30 @@ canvas {
   text-align: right;
 }
 
-.freq-label {
-  font-family: monospace;
-  text-align: center;
+.freq-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.sound-btn {
+  width: 28px;
+  height: 28px;
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.sound-btn:hover {
+  background: #444;
 }
 
 .checkbox-row {
